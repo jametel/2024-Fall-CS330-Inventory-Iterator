@@ -30,7 +30,9 @@ public class Inventory implements Iterable<ItemStack>, Cloneable
      */
     public static void mergeStacks(ItemStack lhs, ItemStack rhs)
     {
-        // Refer to the notes from Assignment 1
+        if (lhs != null && rhs != null && lhs.equals(rhs) && lhs.permitsStacking()) {
+            lhs.addItems(rhs.size());
+        }
     }
 
     /**
@@ -95,7 +97,7 @@ public class Inventory implements Iterable<ItemStack>, Cloneable
     public boolean isFull()
     {
         // Replace the next line
-        return false;
+        return (this.utilizedSlots() >= this.capacity);
     }
 
     /**
@@ -120,6 +122,13 @@ public class Inventory implements Iterable<ItemStack>, Cloneable
     {
         // Adapt the logic from Assignment 1
 
+        Iterator<ItemStack> iterator = this.slots.iterator();
+        while (iterator.hasNext()) {
+            ItemStack stack = iterator.next();
+            if (stack.equals(key)) {
+                return stack;
+            }
+        }
         return null;
     }
 
@@ -130,7 +139,7 @@ public class Inventory implements Iterable<ItemStack>, Cloneable
      */
     public void addItemStackNoCheck(ItemStack toAdd)
     {
-        // Add the missing (one) line by using `this.slots.add(????)`
+        this.slots.add(toAdd);
     }
 
     /**
@@ -168,6 +177,12 @@ public class Inventory implements Iterable<ItemStack>, Cloneable
         Inventory copy = new Inventory(this.totalSlots());
 
         // Add the missing copy logic (loop)
+        Iterator<ItemStack> iterator = this.slots.iterator();
+
+        while (iterator.hasNext()) {
+            ItemStack stack = iterator.next();
+            copy.addItemStackNoCheck(stack.clone()); // Assuming ItemStack has a clone method
+        }
 
         return copy;
     }
@@ -215,6 +230,12 @@ public class Inventory implements Iterable<ItemStack>, Cloneable
         strBld.append(summaryLine);
 
         // Add the missing loop
+        Iterator<ItemStack> iterator = this.slots.iterator();
+        while (iterator.hasNext()) {
+            ItemStack stack = iterator.next();
+            strBld.append("  ").append(stack).append("\n"); // Add indentation and newline
+        }
+
 
         return strBld.toString();
     }
